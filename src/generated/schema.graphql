@@ -1,9 +1,77 @@
-# This file was generated based on ".graphqlconfig". Do not edit manually.
-
-schema {
-    query: Query
+type Query {
+  cars: CarModelModel!
+  user: ProfileModel!
 }
 
-type Query {
-    get: Boolean!
+type CarModelModel {
+  kodiaq: [CarModel!]
+}
+
+type CarModel {
+  id: Float!
+  brand: String!
+  currency: String!
+  fuel: String!
+  type: Type!
+  groupId: String!
+  location: CarModelLocation!
+  imageURL: String!
+  pricePerDay: Float!
+  registrationPlate: String!
+  status: String!
+  subjectTypeId: Float!
+  year: String!
+  reservations: [CarModelReservation!]!
+}
+
+enum Type {
+  SUV
+}
+
+type CarModelLocation {
+  latitude: Float!
+  longitude: Float!
+}
+
+type CarModelReservation {
+  id: Float!
+  from: DateTime!
+  to: DateTime!
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+type ProfileModel {
+  id: Float!
+  firstName: String!
+  lastName: String!
+  email: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  login(values: LoginInput!): SessionModel!
+  register(values: RegisterInput!): SessionModel!
+}
+
+type SessionModel {
+  accessToken: String!
+  refreshToken: String!
+  profile: ProfileModel!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input RegisterInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
 }

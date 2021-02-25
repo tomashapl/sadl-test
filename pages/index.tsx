@@ -1,9 +1,5 @@
-import styled from "styled-components";
+import IndexScene from "../src/scenes";
 
-const Title = styled.h1`
-  font-size: 50px;
-`;
+const IndexPage = () => <IndexScene />;
 
-export default function Home() {
-  return <Title>My page</Title>;
-}
+export default IndexPage;

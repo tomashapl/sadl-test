@@ -2,10 +2,11 @@
   "name": "sadl-test",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next",
+    "dev": "concurrently \"next dev\" \"yarn run generate:watch\"",
     "build": "next build",
     "start": "next start",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "generate:watch": "graphql-codegen --watch"
   },
   "importSort": {
     ".js, .jsx, .ts, .tsx": {
@@ -18,10 +19,14 @@
     "@apollo/react-hooks": "^4.0.0",
     "@kiwicom/orbit-components": "^0.109.2",
     "apollo-server-micro": "^2.21.0",
+    "class-validator": "^0.13.1",
     "firebase": "^8.2.9",
+    "formik": "^2.2.6",
     "graphql": "^15.5.0",
+    "isomorphic-unfetch": "^3.1.0",
     "next": "latest",
     "next-with-apollo": "^5.1.1",
+    "nookies": "^2.5.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-is": "^16.8.0",
@@ -44,6 +49,7 @@
     "babel-eslint": "^10.1.0",
     "babel-plugin-styled-components": "^1.12.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.1",
+    "concurrently": "^6.0.0",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",

@@ -1,11 +1,13 @@
 import { ApolloServer } from "apollo-server-micro";
 import { schema } from "../../apollo/schema";
+import { IApolloContext } from "../../apollo/apolloContext";
 
 const apolloServer = new ApolloServer({
   schema,
-  context: ({ req, res }) => {
+  context: ({ req, res }): IApolloContext => {
     const token = req.headers.authorization;
-    return { req, res, token: token !== "undefined" && token };
+
+    return { req, res, token: typeof token !== "undefined" && token };
   },
   playground: true,
   introspection: true,
