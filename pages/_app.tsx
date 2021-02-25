@@ -1,7 +1,10 @@
 import { AppProps } from "next/app";
 import getTokens from "@kiwicom/orbit-components/lib/getTokens";
+import { ApolloProvider } from "@apollo/react-hooks";
+import withApollo from "../lib/apolloClient";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -38,17 +41,23 @@ const TOKENS = {
   }),
 };
 
-export default function App({ Component, pageProps }: AppProps) {
-  return (
-    <>
-      <ThemeProvider
-        theme={{
-          orbit: TOKENS,
-        }}
-      >
-        <GlobalStyle />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </>
-  );
+interface IAppProps extends AppProps {
+  apollo: ApolloClient<InMemoryCache>;
 }
+
+const App = ({ Component, pageProps, apollo }: IAppProps) => (
+  <>
+    <ThemeProvider
+      theme={{
+        orbit: TOKENS,
+      }}
+    >
+      <GlobalStyle />
+      <ApolloProvider client={apollo}>
+        <Component {...pageProps} />
+      </ApolloProvider>
+    </ThemeProvider>
+  </>
+);
+
+export default withApollo(App);

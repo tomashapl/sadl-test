@@ -1,5 +1,3 @@
-export {}
-
 module.exports = {
   env: {
     browser: true,
