@@ -7,6 +7,12 @@
     "start": "next start",
     "generate": "graphql-codegen"
   },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "module",
+      "parser": "typescript"
+    }
+  },
   "dependencies": {
     "@apollo/client": "^3.3.11",
     "@apollo/react-hooks": "^4.0.0",
