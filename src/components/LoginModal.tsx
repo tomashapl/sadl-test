@@ -40,6 +40,8 @@ const LoginModal: React.VFC<ILoginModalProps> = ({ onClose }) => {
 
         storeAuthorization(data.login.accessToken, data.login.refreshToken);
         setProfile(omitByDeep(data.login.profile, ["__typename"]));
+
+        onClose();
       } catch (err) {
         if (err.graphQLErrors[0]) {
           const error = err.graphQLErrors[0];
