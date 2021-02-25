@@ -1,13 +1,13 @@
-import firebase from "firebase/app";
+import firebase from "firebase";
 import { firebasePool } from "../firebase";
 
-const fetchFromFirebase = async (
+async function fetchFromFirebase<T>(
   ref: string,
   event: firebase.database.EventType
-) => {
+): Promise<T> {
   const fetch = firebasePool().database().ref(ref);
   const snapshot = await fetch.once(event);
-  return snapshot.val();
-};
+  return snapshot.exportVal();
+}
 
 export default fetchFromFirebase;

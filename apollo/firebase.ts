@@ -1,8 +1,8 @@
-import firebase from "firebase/app";
+import { default as firebaseBase } from "firebase";
 
-export const firebasePool = (): firebase.app.App => {
-  if (firebase.app.length === 0) {
-    return firebase.initializeApp({
+export const firebasePool = (): firebaseBase.app.App => {
+  if (firebaseBase.apps.length === 0) {
+    return firebaseBase.initializeApp({
       apiKey: process.env.API_KEY,
       authDomain: process.env.AUTH_DOMAIN,
       databaseURL: process.env.DATABASE_URL,
@@ -11,6 +11,6 @@ export const firebasePool = (): firebase.app.App => {
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
     });
   } else {
-    return firebase.app();
+    return firebaseBase.app();
   }
 };
