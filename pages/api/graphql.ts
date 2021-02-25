@@ -8,6 +8,7 @@ const apolloServer = new ApolloServer({
     return { req, res, token: token !== "undefined" && token };
   },
   playground: true,
+  introspection: true,
 });
 
 export const config = {
