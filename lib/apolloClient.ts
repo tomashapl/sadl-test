@@ -4,6 +4,9 @@ import { from, HttpLink, ApolloClient, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import getAuthorization from "../src/helpers/getAuthorization";
+import { refreshToken } from "./refreshToken";
+import promiseToObservable from "./promiseToObservable";
+import { GRAPHQL_ERRORS } from "../src/enums";
 
 export const getGqlUrl = (headers) => {
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
@@ -13,12 +16,14 @@ export const getGqlUrl = (headers) => {
     : `${protocol}://${headers.host}/api/graphql`;
 };
 
-const errorLink = onError(({ graphQLErrors }) => {
+const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
     for (let err of graphQLErrors) {
       switch (err.extensions.code) {
-        case "UNAUTHENTICATED":
-          return;
+        case GRAPHQL_ERRORS.UNAUTHENTICATED:
+          promiseToObservable(refreshToken(operation)).flatMap(() =>
+            forward(operation)
+          );
       }
     }
   }

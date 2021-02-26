@@ -1,5 +1,5 @@
 import { default as isomorphicUnfetch } from "isomorphic-unfetch";
-import { AuthenticationError, UserInputError } from "apollo-server-micro";
+import { UserInputError } from "apollo-server-micro";
 import parseValidationErrors from "./helpers/parseValidationErrors";
 
 const BASE_URL = "https://digilab.herokuapp.com";
@@ -21,15 +21,12 @@ const fetch = async (URL: string, params: any) => {
     });
   }
 
-  if (request.status === 401) {
-    throw new AuthenticationError(request.statusText);
-  }
-
   if (request.status !== 200 && request.status !== 201) {
     throw new Error(response.message);
   }
 
   return {
+    request,
     json: async () => response,
   };
 };

@@ -1,0 +1,17 @@
+query getCar($id: Float!) {
+    car(id: $id) {
+        id
+        brand
+        model
+        imageURL
+        status
+        fuel
+        type
+        year
+        registrationPlate
+        reservations {
+            from
+            to
+        }
+    }
+}

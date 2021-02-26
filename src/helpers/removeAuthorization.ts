@@ -4,7 +4,7 @@ import {
   TOKEN_STORAGE_KEY,
 } from "./storeAuthorization";
 
-const removeAuthorization = (ctx) => {
+const removeAuthorization = (ctx?) => {
   destroyCookie(ctx, TOKEN_STORAGE_KEY, {
     path: "/",
   });

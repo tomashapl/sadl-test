@@ -37,6 +37,9 @@ class CarModel {
   brand: string;
 
   @Field(() => String)
+  model: string;
+
+  @Field(() => String)
   currency: string;
 
   @Field(() => String)

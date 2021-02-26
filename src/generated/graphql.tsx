@@ -17,19 +17,23 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  cars: CarModelModel;
+  cars: Array<CarModel>;
+  car: CarModel;
+  carsFromFirebase: CarModelModel;
   user: ProfileModel;
+  rentals: Array<RentalModel>;
 };
 
-export type CarModelModel = {
-  __typename?: 'CarModelModel';
-  kodiaq?: Maybe<Array<CarModel>>;
+
+export type QueryCarArgs = {
+  id: Scalars['Float'];
 };
 
 export type CarModel = {
   __typename?: 'CarModel';
   id: Scalars['Float'];
   brand: Scalars['String'];
+  model: Scalars['String'];
   currency: Scalars['String'];
   fuel: Scalars['String'];
   type: Type;
@@ -62,6 +66,11 @@ export type CarModelReservation = {
 };
 
 
+export type CarModelModel = {
+  __typename?: 'CarModelModel';
+  kodiaq?: Maybe<Array<CarModel>>;
+};
+
 export type ProfileModel = {
   __typename?: 'ProfileModel';
   id: Scalars['Float'];
@@ -72,10 +81,26 @@ export type ProfileModel = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type RentalModel = {
+  __typename?: 'RentalModel';
+  from: Scalars['DateTime'];
+  to: Scalars['DateTime'];
+  subjectId: Scalars['Float'];
+  status: Scalars['String'];
+  car: CarModel;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  refreshToken: AuthModel;
   login: SessionModel;
   register: SessionModel;
+  createRental: RentalModel;
+};
+
+
+export type MutationRefreshTokenArgs = {
+  refreshToken: Scalars['String'];
 };
 
 
@@ -86,6 +111,17 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   values: RegisterInput;
+};
+
+
+export type MutationCreateRentalArgs = {
+  values: RentalInput;
+};
+
+export type AuthModel = {
+  __typename?: 'AuthModel';
+  accessToken: Scalars['String'];
+  refreshToken: Scalars['String'];
 };
 
 export type SessionModel = {
@@ -107,6 +143,53 @@ export type RegisterInput = {
   password: Scalars['String'];
 };
 
+export type RentalInput = {
+  subjectID: Scalars['Float'];
+  rentalFrom: Scalars['DateTime'];
+  rentalTo: Scalars['DateTime'];
+};
+
+export type GetCarQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type GetCarQuery = (
+  { __typename?: 'Query' }
+  & { car: (
+    { __typename?: 'CarModel' }
+    & Pick<CarModel, 'id' | 'brand' | 'model' | 'imageURL' | 'status' | 'fuel' | 'type' | 'year' | 'registrationPlate'>
+    & { reservations: Array<(
+      { __typename?: 'CarModelReservation' }
+      & Pick<CarModelReservation, 'from' | 'to'>
+    )> }
+  ) }
+);
+
+export type GetCarsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCarsQuery = (
+  { __typename?: 'Query' }
+  & { cars: Array<(
+    { __typename?: 'CarModel' }
+    & Pick<CarModel, 'id' | 'brand' | 'model' | 'imageURL'>
+  )> }
+);
+
+export type CreateRentalMutationVariables = Exact<{
+  values: RentalInput;
+}>;
+
+
+export type CreateRentalMutation = (
+  { __typename?: 'Mutation' }
+  & { createRental: (
+    { __typename?: 'RentalModel' }
+    & Pick<RentalModel, 'from' | 'to' | 'subjectId'>
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   values: LoginInput;
 }>;
@@ -124,6 +207,19 @@ export type LoginMutation = (
   ) }
 );
 
+export type RefreshTokenMutationVariables = Exact<{
+  refreshToken: Scalars['String'];
+}>;
+
+
+export type RefreshTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { refreshToken: (
+    { __typename?: 'AuthModel' }
+    & Pick<AuthModel, 'accessToken' | 'refreshToken'>
+  ) }
+);
+
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -136,6 +232,120 @@ export type GetUserQuery = (
 );
 
 
+export const GetCarDocument = gql`
+    query getCar($id: Float!) {
+  car(id: $id) {
+    id
+    brand
+    model
+    imageURL
+    status
+    fuel
+    type
+    year
+    registrationPlate
+    reservations {
+      from
+      to
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCarQuery__
+ *
+ * To run a query within a React component, call `useGetCarQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCarQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCarQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCarQuery(baseOptions: Apollo.QueryHookOptions<GetCarQuery, GetCarQueryVariables>) {
+        return Apollo.useQuery<GetCarQuery, GetCarQueryVariables>(GetCarDocument, baseOptions);
+      }
+export function useGetCarLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCarQuery, GetCarQueryVariables>) {
+          return Apollo.useLazyQuery<GetCarQuery, GetCarQueryVariables>(GetCarDocument, baseOptions);
+        }
+export type GetCarQueryHookResult = ReturnType<typeof useGetCarQuery>;
+export type GetCarLazyQueryHookResult = ReturnType<typeof useGetCarLazyQuery>;
+export type GetCarQueryResult = Apollo.QueryResult<GetCarQuery, GetCarQueryVariables>;
+export const GetCarsDocument = gql`
+    query getCars {
+  cars {
+    id
+    brand
+    model
+    imageURL
+  }
+}
+    `;
+
+/**
+ * __useGetCarsQuery__
+ *
+ * To run a query within a React component, call `useGetCarsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCarsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCarsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCarsQuery(baseOptions?: Apollo.QueryHookOptions<GetCarsQuery, GetCarsQueryVariables>) {
+        return Apollo.useQuery<GetCarsQuery, GetCarsQueryVariables>(GetCarsDocument, baseOptions);
+      }
+export function useGetCarsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCarsQuery, GetCarsQueryVariables>) {
+          return Apollo.useLazyQuery<GetCarsQuery, GetCarsQueryVariables>(GetCarsDocument, baseOptions);
+        }
+export type GetCarsQueryHookResult = ReturnType<typeof useGetCarsQuery>;
+export type GetCarsLazyQueryHookResult = ReturnType<typeof useGetCarsLazyQuery>;
+export type GetCarsQueryResult = Apollo.QueryResult<GetCarsQuery, GetCarsQueryVariables>;
+export const CreateRentalDocument = gql`
+    mutation createRental($values: RentalInput!) {
+  createRental(values: $values) {
+    from
+    to
+    subjectId
+  }
+}
+    `;
+export type CreateRentalMutationFn = Apollo.MutationFunction<CreateRentalMutation, CreateRentalMutationVariables>;
+
+/**
+ * __useCreateRentalMutation__
+ *
+ * To run a mutation, you first call `useCreateRentalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRentalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRentalMutation, { data, loading, error }] = useCreateRentalMutation({
+ *   variables: {
+ *      values: // value for 'values'
+ *   },
+ * });
+ */
+export function useCreateRentalMutation(baseOptions?: Apollo.MutationHookOptions<CreateRentalMutation, CreateRentalMutationVariables>) {
+        return Apollo.useMutation<CreateRentalMutation, CreateRentalMutationVariables>(CreateRentalDocument, baseOptions);
+      }
+export type CreateRentalMutationHookResult = ReturnType<typeof useCreateRentalMutation>;
+export type CreateRentalMutationResult = Apollo.MutationResult<CreateRentalMutation>;
+export type CreateRentalMutationOptions = Apollo.BaseMutationOptions<CreateRentalMutation, CreateRentalMutationVariables>;
 export const LoginDocument = gql`
     mutation login($values: LoginInput!) {
   login(values: $values) {
@@ -175,6 +385,39 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const RefreshTokenDocument = gql`
+    mutation refreshToken($refreshToken: String!) {
+  refreshToken(refreshToken: $refreshToken) {
+    accessToken
+    refreshToken
+  }
+}
+    `;
+export type RefreshTokenMutationFn = Apollo.MutationFunction<RefreshTokenMutation, RefreshTokenMutationVariables>;
+
+/**
+ * __useRefreshTokenMutation__
+ *
+ * To run a mutation, you first call `useRefreshTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRefreshTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [refreshTokenMutation, { data, loading, error }] = useRefreshTokenMutation({
+ *   variables: {
+ *      refreshToken: // value for 'refreshToken'
+ *   },
+ * });
+ */
+export function useRefreshTokenMutation(baseOptions?: Apollo.MutationHookOptions<RefreshTokenMutation, RefreshTokenMutationVariables>) {
+        return Apollo.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, baseOptions);
+      }
+export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
+export type RefreshTokenMutationResult = Apollo.MutationResult<RefreshTokenMutation>;
+export type RefreshTokenMutationOptions = Apollo.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
 export const GetUserDocument = gql`
     query getUser {
   user {

@@ -1,15 +1,15 @@
 type Query {
-  cars: CarModelModel!
+  cars: [CarModel!]!
+  car(id: Float!): CarModel!
+  carsFromFirebase: CarModelModel!
   user: ProfileModel!
-}
-
-type CarModelModel {
-  kodiaq: [CarModel!]
+  rentals: [RentalModel!]!
 }
 
 type CarModel {
   id: Float!
   brand: String!
+  model: String!
   currency: String!
   fuel: String!
   type: Type!
@@ -44,6 +44,10 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+type CarModelModel {
+  kodiaq: [CarModel!]
+}
+
 type ProfileModel {
   id: Float!
   firstName: String!
@@ -53,9 +57,24 @@ type ProfileModel {
   updatedAt: DateTime!
 }
 
+type RentalModel {
+  from: DateTime!
+  to: DateTime!
+  subjectId: Float!
+  status: String!
+  car: CarModel!
+}
+
 type Mutation {
+  refreshToken(refreshToken: String!): AuthModel!
   login(values: LoginInput!): SessionModel!
   register(values: RegisterInput!): SessionModel!
+  createRental(values: RentalInput!): RentalModel!
+}
+
+type AuthModel {
+  accessToken: String!
+  refreshToken: String!
 }
 
 type SessionModel {
@@ -74,4 +93,10 @@ input RegisterInput {
   lastName: String!
   email: String!
   password: String!
+}
+
+input RentalInput {
+  subjectID: Float!
+  rentalFrom: DateTime!
+  rentalTo: DateTime!
 }

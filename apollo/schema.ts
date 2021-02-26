@@ -2,17 +2,19 @@ import "reflect-metadata";
 import { buildSchemaSync } from "type-graphql";
 import { CarTypeResolver } from "./resolvers/carType.resolver";
 import { CarModelResolver } from "./resolvers/carModel.resolver";
-import { LoginResolver } from "./resolvers/login.resolver";
+import { SessionResolver } from "./resolvers/session.resolver";
 import { RegisterResolver } from "./resolvers/register.resolver";
 import { UserResolver } from "./resolvers/user.resolver";
+import { RentalResolver } from "./resolvers/rental.resolver";
 
 export const schema = buildSchemaSync({
   resolvers: [
     RegisterResolver,
-    LoginResolver,
+    SessionResolver,
     UserResolver,
     CarModelResolver,
     CarTypeResolver,
+    RentalResolver,
   ],
   dateScalarMode: "isoDate",
 });

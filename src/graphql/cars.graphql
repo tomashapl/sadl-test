@@ -1,0 +1,8 @@
+query getCars {
+    cars {
+        id
+        brand
+        model
+        imageURL
+    }
+}

@@ -6,7 +6,6 @@ const apolloServer = new ApolloServer({
   schema,
   context: ({ req, res }): IApolloContext => {
     const token = req.headers.authorization;
-
     return { req, res, token: typeof token !== "undefined" && token };
   },
   playground: true,

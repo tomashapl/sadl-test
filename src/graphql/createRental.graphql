@@ -1,0 +1,7 @@
+mutation createRental($values: RentalInput!){
+    createRental(values: $values) {
+        from
+        to
+        subjectId
+    }
+}
