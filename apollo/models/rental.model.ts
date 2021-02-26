@@ -1,5 +1,17 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ObjectType, registerEnumType } from "type-graphql";
 import { CarModel } from "./car.model";
+
+enum RENTAL_STATUS {
+  APPROVED = "approved",
+  PENDING = "pending",
+  REJECTED = "rejected",
+  FINISHED = "finished",
+  WAITING = "waiting",
+}
+
+registerEnumType(RENTAL_STATUS, {
+  name: "RentalStatus",
+});
 
 @ObjectType()
 class RentalModel {
@@ -12,8 +24,8 @@ class RentalModel {
   @Field()
   subjectId: number;
 
-  @Field()
-  status: string;
+  @Field(() => RENTAL_STATUS)
+  status: RENTAL_STATUS;
 
   car: CarModel;
 }

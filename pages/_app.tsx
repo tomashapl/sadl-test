@@ -18,7 +18,6 @@ const GlobalStyle = createGlobalStyle`
   ${reset}
   html, body {
     font-family: Roboto, sans-serif;
-    background: #EBEDEC;
     margin: 0;
     padding: 0;
     height: 100%;

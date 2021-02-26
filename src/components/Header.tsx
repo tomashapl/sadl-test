@@ -5,11 +5,17 @@ import { Button, Stack, Heading } from "@kiwicom/orbit-components";
 import { useRouter } from "next/router";
 import LoginModal from "./LoginModal";
 import { ProfileModel } from "../generated/graphql";
-import { PassengerOutline } from "@kiwicom/orbit-components/icons";
+import {
+  PassengerOutline,
+  Close,
+  MenuHamburger,
+} from "@kiwicom/orbit-components/icons";
 import InternalButton from "./Buttons/InternalButton";
+import Drawer from "./Drawer";
 
 const StyledHeader = styled.div`
   padding: ${({ theme }) => `${theme.orbit.spaceLarge} 0`};
+  position: relative;
 `;
 
 const StyledLogo = styled.div`
@@ -23,7 +29,12 @@ interface IHeaderProps {
 
 const Header: React.VFC<IHeaderProps> = ({ profile }) => {
   const [isLoginModalVisible, setIsLoginModalVisible] = React.useState(false);
+  const [isDrawerVisible, setIsDrawerVisible] = React.useState(false);
   const { pathname, push } = useRouter();
+
+  const toggleMenu = React.useCallback(() => {
+    setIsDrawerVisible(!isDrawerVisible);
+  }, [isDrawerVisible]);
 
   return (
     <>
@@ -42,15 +53,23 @@ const Header: React.VFC<IHeaderProps> = ({ profile }) => {
           </Stack>
           <Stack direction="row" justify="end" inline>
             {profile ? (
-              <InternalButton
-                type="primary"
-                href="/cars"
-                as="/cars"
-                size="large"
-                iconLeft={<PassengerOutline />}
-              >
-                {[profile.firstName, profile.lastName].join(" ")}
-              </InternalButton>
+              <Stack direction="row">
+                <InternalButton
+                  type="primary"
+                  href="/cars"
+                  as="/cars"
+                  size="large"
+                  iconLeft={<PassengerOutline />}
+                >
+                  {[profile.firstName, profile.lastName].join(" ")}
+                </InternalButton>
+                <Button
+                  type="white"
+                  size="large"
+                  onClick={toggleMenu}
+                  iconLeft={isDrawerVisible ? <Close /> : <MenuHamburger />}
+                />
+              </Stack>
             ) : (
               <Button
                 type="primary"
@@ -62,6 +81,10 @@ const Header: React.VFC<IHeaderProps> = ({ profile }) => {
             )}
           </Stack>
         </Stack>
+
+        {isDrawerVisible && (
+          <Drawer onChangePath={() => setIsDrawerVisible(false)} />
+        )}
       </StyledHeader>
 
       {isLoginModalVisible && (

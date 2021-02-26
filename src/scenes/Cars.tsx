@@ -19,7 +19,7 @@ const CarsScene = () => {
       {data.cars.map((car) => (
         <Car
           key={car.id}
-          id={car.id}
+          id={car.subjectTypeId}
           model={car.model}
           image={car.imageURL}
           brand={car.brand}

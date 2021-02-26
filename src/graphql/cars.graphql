@@ -1,6 +1,7 @@
 query getCars {
     cars {
         id
+        subjectTypeId
         brand
         model
         imageURL

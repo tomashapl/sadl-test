@@ -1,0 +1,12 @@
+query rentals {
+    rentals {
+        from
+        to
+        status
+        car {
+            imageURL
+            brand
+            model
+        }
+    }
+}

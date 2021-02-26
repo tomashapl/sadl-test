@@ -86,9 +86,17 @@ export type RentalModel = {
   from: Scalars['DateTime'];
   to: Scalars['DateTime'];
   subjectId: Scalars['Float'];
-  status: Scalars['String'];
+  status: RentalStatus;
   car: CarModel;
 };
+
+export enum RentalStatus {
+  Approved = 'APPROVED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED',
+  Finished = 'FINISHED',
+  Waiting = 'WAITING'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -173,7 +181,7 @@ export type GetCarsQuery = (
   { __typename?: 'Query' }
   & { cars: Array<(
     { __typename?: 'CarModel' }
-    & Pick<CarModel, 'id' | 'brand' | 'model' | 'imageURL'>
+    & Pick<CarModel, 'id' | 'subjectTypeId' | 'brand' | 'model' | 'imageURL'>
   )> }
 );
 
@@ -218,6 +226,21 @@ export type RefreshTokenMutation = (
     { __typename?: 'AuthModel' }
     & Pick<AuthModel, 'accessToken' | 'refreshToken'>
   ) }
+);
+
+export type RentalsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RentalsQuery = (
+  { __typename?: 'Query' }
+  & { rentals: Array<(
+    { __typename?: 'RentalModel' }
+    & Pick<RentalModel, 'from' | 'to' | 'status'>
+    & { car: (
+      { __typename?: 'CarModel' }
+      & Pick<CarModel, 'imageURL' | 'brand' | 'model'>
+    ) }
+  )> }
 );
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
@@ -281,6 +304,7 @@ export const GetCarsDocument = gql`
     query getCars {
   cars {
     id
+    subjectTypeId
     brand
     model
     imageURL
@@ -418,6 +442,45 @@ export function useRefreshTokenMutation(baseOptions?: Apollo.MutationHookOptions
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>;
 export type RefreshTokenMutationResult = Apollo.MutationResult<RefreshTokenMutation>;
 export type RefreshTokenMutationOptions = Apollo.BaseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const RentalsDocument = gql`
+    query rentals {
+  rentals {
+    from
+    to
+    status
+    car {
+      imageURL
+      brand
+      model
+    }
+  }
+}
+    `;
+
+/**
+ * __useRentalsQuery__
+ *
+ * To run a query within a React component, call `useRentalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRentalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRentalsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRentalsQuery(baseOptions?: Apollo.QueryHookOptions<RentalsQuery, RentalsQueryVariables>) {
+        return Apollo.useQuery<RentalsQuery, RentalsQueryVariables>(RentalsDocument, baseOptions);
+      }
+export function useRentalsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RentalsQuery, RentalsQueryVariables>) {
+          return Apollo.useLazyQuery<RentalsQuery, RentalsQueryVariables>(RentalsDocument, baseOptions);
+        }
+export type RentalsQueryHookResult = ReturnType<typeof useRentalsQuery>;
+export type RentalsLazyQueryHookResult = ReturnType<typeof useRentalsLazyQuery>;
+export type RentalsQueryResult = Apollo.QueryResult<RentalsQuery, RentalsQueryVariables>;
 export const GetUserDocument = gql`
     query getUser {
   user {

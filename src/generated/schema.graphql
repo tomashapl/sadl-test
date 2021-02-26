@@ -1,102 +1,116 @@
-type Query {
-  cars: [CarModel!]!
-  car(id: Float!): CarModel!
-  carsFromFirebase: CarModelModel!
-  user: ProfileModel!
-  rentals: [RentalModel!]!
-}
+# This file was generated based on ".graphqlconfig". Do not edit manually.
 
-type CarModel {
-  id: Float!
-  brand: String!
-  model: String!
-  currency: String!
-  fuel: String!
-  type: Type!
-  groupId: String!
-  location: CarModelLocation!
-  imageURL: String!
-  pricePerDay: Float!
-  registrationPlate: String!
-  status: String!
-  subjectTypeId: Float!
-  year: String!
-  reservations: [CarModelReservation!]!
-}
-
-enum Type {
-  SUV
-}
-
-type CarModelLocation {
-  latitude: Float!
-  longitude: Float!
-}
-
-type CarModelReservation {
-  id: Float!
-  from: DateTime!
-  to: DateTime!
-}
-
-"""
-The javascript `Date` as string. Type represents date and time as the ISO Date string.
-"""
-scalar DateTime
-
-type CarModelModel {
-  kodiaq: [CarModel!]
-}
-
-type ProfileModel {
-  id: Float!
-  firstName: String!
-  lastName: String!
-  email: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type RentalModel {
-  from: DateTime!
-  to: DateTime!
-  subjectId: Float!
-  status: String!
-  car: CarModel!
-}
-
-type Mutation {
-  refreshToken(refreshToken: String!): AuthModel!
-  login(values: LoginInput!): SessionModel!
-  register(values: RegisterInput!): SessionModel!
-  createRental(values: RentalInput!): RentalModel!
+schema {
+    query: Query
+    mutation: Mutation
 }
 
 type AuthModel {
-  accessToken: String!
-  refreshToken: String!
+    accessToken: String!
+    refreshToken: String!
+}
+
+type CarModel {
+    brand: String!
+    currency: String!
+    fuel: String!
+    groupId: String!
+    id: Float!
+    imageURL: String!
+    location: CarModelLocation!
+    model: String!
+    pricePerDay: Float!
+    registrationPlate: String!
+    reservations: [CarModelReservation!]!
+    status: String!
+    subjectTypeId: Float!
+    type: Type!
+    year: String!
+}
+
+type CarModelLocation {
+    latitude: Float!
+    longitude: Float!
+}
+
+type CarModelModel {
+    kodiaq: [CarModel!]
+}
+
+type CarModelReservation {
+    from: DateTime!
+    id: Float!
+    to: DateTime!
+}
+
+type Mutation {
+    createRental(values: RentalInput!): RentalModel!
+    login(values: LoginInput!): SessionModel!
+    refreshToken(refreshToken: String!): AuthModel!
+    register(values: RegisterInput!): SessionModel!
+}
+
+type ProfileModel {
+    createdAt: DateTime!
+    email: String!
+    firstName: String!
+    id: Float!
+    lastName: String!
+    updatedAt: DateTime!
+}
+
+type Query {
+    car(id: Float!): CarModel!
+    cars: [CarModel!]!
+    carsFromFirebase: CarModelModel!
+    rentals: [RentalModel!]!
+    user: ProfileModel!
+}
+
+type RentalModel {
+    car: CarModel!
+    from: DateTime!
+    status: RentalStatus!
+    subjectId: Float!
+    to: DateTime!
 }
 
 type SessionModel {
-  accessToken: String!
-  refreshToken: String!
-  profile: ProfileModel!
+    accessToken: String!
+    profile: ProfileModel!
+    refreshToken: String!
+}
+
+enum RentalStatus {
+    APPROVED
+    FINISHED
+    PENDING
+    REJECTED
+    WAITING
+}
+
+enum Type {
+    SUV
 }
 
 input LoginInput {
-  email: String!
-  password: String!
+    email: String!
+    password: String!
 }
 
 input RegisterInput {
-  firstName: String!
-  lastName: String!
-  email: String!
-  password: String!
+    email: String!
+    firstName: String!
+    lastName: String!
+    password: String!
 }
 
 input RentalInput {
-  subjectID: Float!
-  rentalFrom: DateTime!
-  rentalTo: DateTime!
+    rentalFrom: DateTime!
+    rentalTo: DateTime!
+    subjectID: Float!
 }
+
+
+"The javascript `Date` as string. Type represents date and time as the ISO Date string."
+scalar DateTime
